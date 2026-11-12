@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>繼電器是什麼？給新手的入門課</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f4ef; --card:#ffffff; --ink:#1f2328; --muted:#5f6670; --line:#e2ddd3;
+  --copper:#b8642a; --copper-soft:#f6e6d8; --teal:#0f766e; --teal-soft:#dcf1ee;
+  --red:#b42318; --red-soft:#fde8e6; --amber:#9a6700; --amber-soft:#fdf2d6;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);
+  font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;line-height:1.6}
+a{color:var(--teal)}
+.deck{height:100%;position:relative;overflow:hidden}
+.slide{position:absolute;inset:0;display:none;overflow-y:auto;padding:28px 6vw 120px}
+.slide.active{display:block;animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.inner{max-width:1080px;margin:0 auto}
+.mainq{font-size:clamp(1.9rem,4.3vw,3rem);font-weight:700;color:var(--copper);line-height:1.2;margin:0 0 .4em;padding-bottom:.25em;border-bottom:3px solid var(--copper-soft)}
+.mainq small{display:block;font-size:.38em;color:var(--muted);letter-spacing:.12em;font-weight:500;margin-bottom:.2em}
+.subq{font-size:clamp(1.15rem,2.3vw,1.55rem);margin:.1em 0 .45em;line-height:1.4}
+.subq::before{content:"Q";display:inline-block;background:var(--teal);color:#fff;border-radius:6px;padding:0 .4em;margin-right:.45em;font-size:.8em;vertical-align:.08em}
+.answer{font-size:clamp(1.05rem,2vw,1.3rem);font-weight:700;background:var(--copper-soft);border-left:5px solid var(--copper);padding:10px 16px;border-radius:0 12px 12px 0;margin:0 0 20px;line-height:1.55}
+.answer::before{content:"A";display:inline-block;background:var(--copper);color:#fff;border-radius:6px;padding:0 .4em;margin-right:.5em;font-size:.85em}
+.leadin{font-size:clamp(1.15rem,2.3vw,1.55rem);margin:.1em 0 .5em;line-height:1.4;padding-left:.6em;border-left:5px solid var(--teal)}
+.subq.small,h3.subq{font-size:clamp(1.05rem,2vw,1.3rem)}
+.answer.plain::before{content:none}
+.rs .tag{display:inline-block;font-weight:700;font-size:.9rem;padding:2px 10px;border-radius:999px;margin-bottom:8px;background:#fff}
+.rs .card.red .tag{color:var(--red)} .rs .card.teal .tag{color:var(--teal)}
+.rs ul{padding-left:1.2em;margin:.3em 0}
+.kicker{color:var(--copper);font-weight:700;letter-spacing:.08em;font-size:.85rem}
+h1{font-size:clamp(1.9rem,4.5vw,3.2rem);line-height:1.25;margin:.2em 0 .3em}
+h2{font-size:clamp(1.4rem,3vw,2.1rem);margin:.15em 0 .6em;line-height:1.3}
+h3{font-size:1.1rem;margin:.2em 0 .4em}
+p,li{font-size:clamp(1rem,1.6vw,1.12rem)}
+.lead{font-size:clamp(1.1rem,2vw,1.35rem);color:var(--muted)}
+.big{font-size:clamp(1.3rem,2.6vw,1.8rem);font-weight:700;line-height:1.5}
+.hl{background:linear-gradient(transparent 60%,var(--copper-soft) 60%);padding:0 .1em}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media(max-width:760px){.grid2,.grid3,.grid4{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+.card.copper{background:var(--copper-soft);border-color:#ebcbb0}
+.card.teal{background:var(--teal-soft);border-color:#b5e0da}
+.card.red{background:var(--red-soft);border-color:#f5c2bd}
+.card.amber{background:var(--amber-soft);border-color:#f0dca6}
+.card h3{margin-top:0}
+table{border-collapse:collapse;width:100%;background:var(--card);border-radius:12px;overflow:hidden;font-size:clamp(.92rem,1.5vw,1.02rem)}
+th,td{border-bottom:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+th{background:#efeae0;font-weight:700}
+.src{display:inline-block;font-size:.72em;color:var(--teal);background:var(--teal-soft);border-radius:6px;padding:0 .4em;margin-left:.2em;vertical-align:.12em;font-weight:500;white-space:nowrap}
+.note{font-size:.9rem;color:var(--muted)}
+.warn{border-left:4px solid var(--red);background:var(--red-soft);padding:10px 14px;border-radius:0 10px 10px 0}
+figure{margin:0}
+figure img{width:100%;border-radius:12px;border:1px solid var(--line);background:#fff;display:block}
+figcaption{font-size:.78rem;color:var(--muted);margin-top:6px;line-height:1.4}
+.photo-grid figure img{height:150px;object-fit:contain;padding:8px}
+svg text{font-family:inherit}
+.diagram{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px;width:100%}
+.btn{font:inherit;border:0;border-radius:999px;padding:10px 20px;background:var(--copper);color:#fff;font-weight:700;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--copper);border:2px solid var(--copper)}
+.state{font-weight:700}
+.chain{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:14px 0}
+.chain .node{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-weight:500;text-align:center}
+.chain .node.key{background:var(--copper);color:#fff;border-color:var(--copper)}
+.chain .arrow{color:var(--muted);font-size:1.3rem}
+.steps{counter-reset:s;list-style:none;padding:0}
+.steps li{counter-increment:s;position:relative;padding:8px 10px 8px 46px;border-radius:10px;margin:6px 0;transition:background .3s}
+.steps li::before{content:counter(s);position:absolute;left:10px;top:8px;width:26px;height:26px;border-radius:50%;background:var(--line);text-align:center;font-weight:700;line-height:26px}
+.steps li.on{background:var(--copper-soft)}
+.steps li.on::before{background:var(--copper);color:#fff}
+.quiz .q{margin-bottom:16px}
+.quiz button.opt{display:block;width:100%;text-align:left;font:inherit;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 14px;margin:6px 0;cursor:pointer}
+.quiz button.opt.right{background:var(--teal-soft);border-color:var(--teal)}
+.quiz button.opt.wrong{background:var(--red-soft);border-color:var(--red)}
+.quiz .fb{font-size:.92rem;min-height:1.4em;color:var(--muted)}
+.wikiref{position:fixed;left:0;right:0;bottom:56px;text-align:center;font-size:.8rem;color:var(--muted);pointer-events:none}
+.wikiref span{background:rgba(246,244,239,.92);padding:2px 10px;border-radius:8px;pointer-events:auto}
+.bar{position:fixed;left:0;right:0;bottom:0;height:52px;display:flex;align-items:center;justify-content:center;gap:14px;background:rgba(246,244,239,.95);border-top:1px solid var(--line)}
+.bar button{font:inherit;border:1px solid var(--line);background:var(--card);border-radius:999px;width:44px;height:36px;cursor:pointer;font-size:1.1rem}
+.bar .count{min-width:70px;text-align:center;color:var(--muted);font-size:.9rem}
+.progress{position:fixed;top:0;left:0;height:4px;background:var(--copper);transition:width .3s;z-index:5}
+.cover{display:flex;flex-direction:column;justify-content:center;min-height:80vh}
+.lamp{transition:fill .25s}
+#armature,#spring,#blade{transition:transform .45s cubic-bezier(.5,1.6,.5,1)}
+#field{transition:opacity .3s}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<main class="deck" id="deck">
+
+<!-- 1 封面 -->
+<section class="slide" data-wiki="index" data-src="">
+ <div class="inner cover">
+  <div class="kicker">機電入門｜教學簡報</div>
+  <h1>繼電器是什麼？<br>用「小訊號」控制「大電流」的開關</h1>
+  <p class="lead">給第一次接觸繼電器的你：看懂它的構造、怎麼動、有哪些種類、怎麼安全使用。</p>
+  <p class="note">內容全部取自本課的 LLM Wiki（6 份資料：S1～S6），每頁下方都標有對應的 Wiki 頁面與來源編號。<br>操作方式：← → 鍵、下方按鈕或左右滑動換頁。</p>
+ </div>
+</section>
+
+<!-- 2 地圖 -->
+<section class="slide" data-wiki="index" data-src="">
+ <div class="inner">
+  <div class="mainq"><small>本課</small>本課地圖：六個問題</div>
+  <div class="grid3">
+   <div class="card copper"><h3>1. 它是什麼？</h3><p>定義、為什麼需要它</p></div>
+   <div class="card copper"><h3>2. 長什麼樣？怎麼動？</h3><p>構造、運作原理</p></div>
+   <div class="card copper"><h3>3. 接點怎麼看？</h3><p>NO／NC／COM、電路符號</p></div>
+   <div class="card teal"><h3>4. 有哪些種類？</h3><p>EMR 與 SSR、各種繼電器</p></div>
+   <div class="card teal"><h3>5. 怎麼安全使用？</h3><p>規格、電弧、反電動勢、測試</p></div>
+   <div class="card teal"><h3>6. 用在哪裡？</h3><p>生活與工業應用、小測驗</p></div>
+  </div>
+ </div>
+</section>
+
+<!-- 3 定義 -->
+<section class="slide" data-wiki="01-繼電器是什麼" data-src="S1 S3 S4 S5 S6">
+ <div class="inner">
+  <div class="mainq"><small>問題 1／6</small>繼電器是什麼？</div>
+  <h2 class="subq">繼電器的定義是什麼？</h2>
+  <p class="answer">用小功率的控制訊號，去切換高電壓、大電流電路的「電控開關」。<span class="src">S1 S4 S6</span></p>
+  <div class="grid2" style="margin-top:18px">
+   <div class="card">
+    <h3>名字的由來</h3>
+    <p>relay 來自法文 <b>relais</b>，意思是「傳遞」──把控制訊號「接力」傳到另一個電路。<span class="src">S4</span></p>
+   </div>
+   <div class="card">
+    <h3>它還能做到</h3>
+    <ul>
+     <li>控制端和負載端<b>沒有導線直接相連</b>（電氣隔離），保護控制電路和人<span class="src">S1 S3 S4</span></li>
+     <li>一個訊號同時控制多組電路<span class="src">S1 S5</span></li>
+     <li>AC、DC 都能切換<span class="src">S4 S5</span></li>
+    </ul>
+   </div>
+  </div>
+  <p class="note" style="margin-top:14px">比喻：Arduino 的一個小腳位（小訊號），透過繼電器，就能開關一台用插座供電的大電器。</p>
+ </div>
+</section>
+
+<!-- 4 為什麼需要 -->
+<section class="slide" data-wiki="01-繼電器是什麼" data-src="S1 S2">
+ <div class="inner">
+  <div class="mainq"><small>問題 1／6</small>繼電器是什麼？</div>
+  <h2 class="subq">手動開關、電晶體也能開關電路，為什麼還需要繼電器？</h2>
+  <p class="answer">繼電器能切換交流大負載、又有電氣隔離；實務上常和電晶體一起用。<span class="src">S1 S2</span></p>
+  <div class="grid3">
+   <div class="card"><h3>手動開關</h3><p>要人去按；體積大、速度慢、能切的電流小。<span class="src">S1</span></p></div>
+   <div class="card"><h3>電晶體</h3><p>也能用小電流控制大電流，適合<b>小型直流負載</b>（例如小馬達）。<span class="src">S2</span></p></div>
+   <div class="card copper"><h3>繼電器</h3><p>能切換<b>交流大負載</b>（例：AC 250 V／10 A），也能切 DC；而且有電氣隔離。<span class="src">S1 S2</span></p></div>
+  </div>
+  <h3 style="margin-top:22px">實務上：兩者常常「一起用」</h3>
+  <div class="chain">
+   <div class="node">Arduino 腳位<br><span class="note">電流太小</span></div><div class="arrow">→</div>
+   <div class="node">電晶體<br><span class="note">放大去推線圈</span></div><div class="arrow">→</div>
+   <div class="node key">繼電器<br><span style="font-size:.85em">切換大負載</span></div><div class="arrow">→</div>
+   <div class="node">馬達／電器</div>
+  </div>
+  <p class="note">Arduino 腳位的電流不夠直接推動繼電器線圈，所以中間要加電晶體。<span class="src">S2</span></p>
+ </div>
+</section>
+
+<!-- 5 執行器 -->
+<section class="slide" data-wiki="01-繼電器是什麼 / 13-應用" data-src="S1 S2">
+ <div class="inner">
+  <div class="mainq"><small>問題 1／6</small>繼電器是什麼？</div>
+  <h2 class="subq">繼電器在控制系統裡扮演什麼角色？</h2>
+  <p class="answer">它是「執行器」：把電訊號變成接點的實際動作。<span class="src">S1</span></p>
+  <div class="grid2">
+   <div class="card teal"><h3>感測器＝輸入</h3><p>感知外界（溫度、光、按鈕…）。<span class="src">S1</span></p></div>
+   <div class="card copper"><h3>執行器＝輸出</h3><p>把電訊號變成實際動作。繼電器用電訊號讓接點<b>動起來</b>，所以是<b>電氣執行器</b>。<span class="src">S1</span></p></div>
+  </div>
+  <div class="chain" style="margin-top:20px">
+   <div class="node">感測器<br><span class="note">輸入</span></div><div class="arrow">→</div>
+   <div class="node">控制器<br><span class="note">判斷</span></div><div class="arrow">→</div>
+   <div class="node key">繼電器<br><span style="font-size:.85em">輸出／執行器</span></div><div class="arrow">→</div>
+   <div class="node">負載<br><span class="note">燈、馬達、加熱器</span></div>
+  </div>
+  <p class="note">冷知識：電磁閥（solenoid）的柱塞如果拿去推動接點，就變成了繼電器──兩者是親戚。<span class="src">S1</span></p>
+ </div>
+</section>
+
+<!-- 6 構造 -->
+<section class="slide" data-wiki="02-運作原理與構造" data-src="S1 S3 S4 S5">
+ <div class="inner">
+  <div class="mainq"><small>問題 2／6</small>長什麼樣？怎麼動？</div>
+  <h2 class="subq">一顆電磁繼電器（EMR）裡面有什麼？</h2>
+  <p class="answer">線圈、鐵芯／軛鐵、銜鐵、彈簧、接點；其中線圈是唯一的動力來源。<span class="src">S1 S4</span></p>
+  <div class="grid2">
+   <figure>
+    <img src="img/s3-p1-cutaway.jpg" alt="拆開外殼的電磁繼電器，可見銅線圈、鐵框與銜鐵">
+    <figcaption>拆殼實拍：中間的銅色是線圈，上方 L 形鐵件是軛鐵，右側金屬片是銜鐵。<br>圖片取自：Schneider Electric〈What is Relay〉<a href="https://eshop.se.com/in/blog/post/what-is-relay.html" target="_blank" rel="noopener">連結</a></figcaption>
+   </figure>
+   <table>
+    <tr><th>零件</th><th>作用</th></tr>
+    <tr><td>線圈</td><td>通電產生磁場，<b>唯一的動力來源</b><span class="src">S1 S4</span></td></tr>
+    <tr><td>鐵芯／軛鐵</td><td>加強並導引磁場<span class="src">S1 S4</span></td></tr>
+    <tr><td>銜鐵</td><td>被磁力吸動的金屬片，把磁力變成動作<span class="src">S1 S4</span></td></tr>
+    <tr><td>彈簧</td><td>斷電後把銜鐵拉回原位<span class="src">S1 S4</span></td></tr>
+    <tr><td>接點</td><td>真正開關外部電路的金屬片<span class="src">S1 S4</span></td></tr>
+    <tr><td>支點、推卡</td><td>銜鐵轉動的軸心；把動作傳給接點<span class="src">S1-F2 S5-F1</span></td></tr>
+   </table>
+  </div>
+  <p class="note" style="margin-top:12px">小提醒：彈簧不一定是一圈一圈的。上面這顆是<b>銅片彈簧</b>，有些繼電器用<b>螺旋彈簧</b>（見圖鑑頁）。〔圖片觀察：S3-P1、S3-P2〕</p>
+ </div>
+</section>
+
+<!-- 7 運作原理 互動 -->
+<section class="slide" data-wiki="02-運作原理與構造" data-src="S1 S3 S4 S5 S6">
+ <div class="inner">
+  <div class="mainq"><small>問題 2／6</small>長什麼樣？怎麼動？</div>
+  <h2 class="subq">它是怎麼動起來的？（按按鈕試試看）</h2>
+  <p class="answer">線圈通電吸下銜鐵、接點切換；斷電後彈簧把它拉回原位。<span class="src">S1 S3 S4</span></p>
+  <div class="grid2">
+   <svg class="diagram" viewBox="0 0 520 290" role="img" aria-label="電磁繼電器運作示意圖">
+    <rect x="20" y="20" width="250" height="8" fill="#9aa1a8"/>
+    <g id="spring" style="transform-origin:200px 28px">
+     <polyline points="200,28 190,36 210,44 190,52 210,60 190,68 210,76 200,84" fill="none" stroke="#5f6670" stroke-width="2.5"/>
+    </g>
+    <path d="M20 100 H34 V240 H120 V252 H20 Z" fill="#9aa1a8"/>
+    <rect x="62" y="118" width="56" height="122" fill="#b8bec5"/>
+    <g fill="#c87533">
+     <rect x="48" y="132" width="84" height="9" rx="3"/><rect x="48" y="146" width="84" height="9" rx="3"/>
+     <rect x="48" y="160" width="84" height="9" rx="3"/><rect x="48" y="174" width="84" height="9" rx="3"/>
+     <rect x="48" y="188" width="84" height="9" rx="3"/><rect x="48" y="202" width="84" height="9" rx="3"/>
+     <rect x="48" y="216" width="84" height="9" rx="3"/>
+    </g>
+    <g id="field" opacity="0" fill="none" stroke="#0f766e" stroke-width="1.5" stroke-dasharray="4 4">
+     <path d="M90 116 C 70 60, 150 60, 140 150"/><path d="M90 116 C 110 70, 180 90, 140 200"/>
+    </g>
+    <g id="armature" style="transform-origin:27px 105px">
+     <rect x="22" y="100" width="300" height="10" rx="3" fill="#6b7280"/>
+     <circle cx="318" cy="105" r="7" fill="#d4a017" stroke="#8a6a0c"/>
+    </g>
+    <circle cx="27" cy="105" r="6" fill="#fff" stroke="#374151" stroke-width="2"/>
+    <rect x="300" y="58" width="80" height="7" fill="#374151"/>
+    <rect x="300" y="125" width="80" height="7" fill="#374151"/>
+    <line x1="380" y1="61" x2="430" y2="61" stroke="#374151" stroke-width="2"/>
+    <line x1="380" y1="128" x2="430" y2="128" stroke="#374151" stroke-width="2"/>
+    <circle class="lamp" id="lampNC" cx="448" cy="61" r="16" fill="#fde68a" stroke="#374151" stroke-width="2"/>
+    <circle class="lamp" id="lampNO" cx="448" cy="128" r="16" fill="#e5e7eb" stroke="#374151" stroke-width="2"/>
+    <text x="472" y="66" font-size="13" fill="#1f2328">NC 燈</text>
+    <text x="472" y="133" font-size="13" fill="#1f2328">NO 燈</text>
+    <text x="300" y="50" font-size="12" fill="#5f6670">常閉接點 NC</text>
+    <text x="300" y="150" font-size="12" fill="#5f6670">常開接點 NO</text>
+    <text x="215" y="58" font-size="12" fill="#5f6670">彈簧</text>
+    <text x="150" y="132" font-size="12" fill="#5f6670">銜鐵</text>
+    <text x="40" y="92" font-size="12" fill="#5f6670">支點</text>
+    <text x="140" y="232" font-size="12" fill="#5f6670">線圈</text>
+    <text x="0" y="272" font-size="12" fill="#5f6670">軛鐵</text>
+    <text x="326" y="98" font-size="12" fill="#8a6a0c">COM</text>
+    <text x="300" y="200" font-size="15" class="state" id="stateTxt" fill="#1f2328">線圈：斷電</text>
+    <text x="300" y="222" font-size="12" fill="#5f6670" id="stateSub">彈簧把銜鐵拉上 → COM 接 NC</text>
+   </svg>
+   <div>
+    <ol class="steps" id="steps">
+     <li data-s="1"><b>產生磁場</b>：電流流過線圈，鐵芯變成電磁鐵。<span class="src">S3 S4</span></li>
+     <li data-s="2"><b>接點切換</b>：磁力把銜鐵吸下來，COM 從 NC 離開、改接 NO。<span class="src">S3 S4</span></li>
+     <li data-s="3"><b>斷電復位</b>：線圈斷電，彈簧把銜鐵拉回，COM 回到 NC。<span class="src">S1 S3 S5</span></li>
+    </ol>
+    <p><button class="btn" data-toggle>接通線圈電源</button></p>
+    <p class="note">磁力大小取決於<b>線圈電流</b>和<b>線圈圈數</b>。<span class="src">S4</span><br>動作時會發出「喀」一聲，那是接點在動。<span class="src">S2 S4</span></p>
+   </div>
+  </div>
+  <p class="note">示意圖依 S1-F2、S5-F1 重新繪製並簡化。</p>
+ </div>
+</section>
+
+<!-- 8 接點與符號 -->
+<section class="slide" data-wiki="03-接點類型 / 04-電路符號" data-src="S1 S4 S6">
+ <div class="inner">
+  <div class="mainq"><small>問題 3／6</small>接點怎麼看？</div>
+  <h2 class="leadin">首先，要認識三個名詞：NO、NC、COM</h2>
+  <h3 class="subq">它們分別是什麼意思？</h3>
+  <p class="answer">看的都是「沒通電」時的狀態：NO 平常斷開、NC 平常閉合，COM 在兩者之間切換。<span class="src">S1 S4 S6</span></p>
+  <div class="grid2">
+   <div>
+    <svg class="diagram" viewBox="0 0 360 200" role="img" aria-label="繼電器電路符號">
+     <line x1="70" y1="20" x2="70" y2="60" stroke="#1f2328" stroke-width="2"/>
+     <rect x="45" y="60" width="50" height="70" fill="none" stroke="#1f2328" stroke-width="2"/>
+     <line x1="70" y1="130" x2="70" y2="170" stroke="#1f2328" stroke-width="2"/>
+     <text x="70" y="190" font-size="13" text-anchor="middle">線圈</text>
+     <line x1="97" y1="85" x2="220" y2="85" stroke="#1f2328" stroke-dasharray="5 4"/>
+     <circle cx="180" cy="100" r="5" fill="none" stroke="#1f2328" stroke-width="2"/>
+     <line x1="180" y1="105" x2="180" y2="170" stroke="#1f2328" stroke-width="2"/>
+     <text x="188" y="168" font-size="13">COM</text>
+     <g id="blade" style="transform-origin:180px 100px"><line x1="180" y1="100" x2="267" y2="72" stroke="#b8642a" stroke-width="3"/></g>
+     <circle cx="272" cy="70" r="5" fill="none" stroke="#1f2328" stroke-width="2"/>
+     <circle cx="272" cy="125" r="5" fill="none" stroke="#1f2328" stroke-width="2"/>
+     <line x1="277" y1="70" x2="320" y2="70" stroke="#1f2328" stroke-width="2"/>
+     <line x1="277" y1="125" x2="320" y2="125" stroke="#1f2328" stroke-width="2"/>
+     <text x="326" y="75" font-size="13">NC</text>
+     <text x="326" y="130" font-size="13">NO</text>
+     <text x="180" y="30" font-size="13" text-anchor="middle" id="symState" fill="#b8642a">未通電：COM–NC 導通</text>
+    </svg>
+    <p style="text-align:center"><button class="btn ghost" data-toggle>切換線圈通電／斷電</button></p>
+    <p class="note">電路圖把繼電器拆成兩部分：<b>線圈</b>（方框或圓）＋<b>接點</b>（開關），虛線代表兩者機械連動。<span class="src">S4</span> 依 S1-F1 重新繪製。</p>
+   </div>
+   <div>
+    <table>
+     <tr><th>代號</th><th>沒通電</th><th>通電後</th></tr>
+     <tr><td><b>NO</b> 常開</td><td>斷開</td><td>閉合<span class="src">S1 S4 S6</span></td></tr>
+     <tr><td><b>NC</b> 常閉</td><td>閉合</td><td>斷開<span class="src">S1 S4 S6</span></td></tr>
+     <tr><td><b>COM</b> 共同端</td><td colspan="2">在 NO 與 NC 之間切換的那一端<span class="src">S4 S6</span></td></tr>
+    </table>
+    <div class="card amber" style="margin-top:14px">
+     <h3>什麼時候用哪一個？<span class="src">S6</span></h3>
+     <ul>
+      <li><b>NO</b>：「觸發才啟動」──警報、照明控制</li>
+      <li><b>NC</b>：故障安全、監控電路──急停系統</li>
+      <li><b>CO 切換型</b>：電源切換、訊號路徑選擇</li>
+     </ul>
+     <p class="note">想一想：急停為什麼用 NC？因為線路一旦斷掉，效果就和「按下急停」一樣，機器會停下來，比較安全。〔教學推論〕</p>
+    </div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<!-- 9 刀與擲 -->
+<section class="slide" data-wiki="03-接點類型" data-src="S1 S4 S5">
+ <div class="inner">
+  <div class="mainq"><small>問題 3／6</small>接點怎麼看？</div>
+  <h2 class="leadin">接著，認識接點組合的代號：SPST、SPDT、DPST、DPDT</h2>
+  <h3 class="subq">這些代號怎麼看？</h3>
+  <p class="answer">「刀」是幾組電路，「擲」是每組有幾個出口。<span class="src">S1 S4 S5</span></p>
+  <svg class="diagram" viewBox="0 0 760 150" role="img" aria-label="SPST、SPDT、DPST、DPDT 接點示意">
+   <g stroke="#1f2328" stroke-width="2" fill="none">
+    <circle cx="30" cy="80" r="4"/><line x1="34" y1="80" x2="100" y2="58" stroke="#b8642a" stroke-width="3"/><circle cx="110" cy="58" r="4"/>
+    <circle cx="210" cy="80" r="4"/><line x1="214" y1="80" x2="280" y2="58" stroke="#b8642a" stroke-width="3"/><circle cx="290" cy="58" r="4"/><circle cx="290" cy="102" r="4"/>
+    <circle cx="390" cy="55" r="4"/><line x1="394" y1="55" x2="460" y2="33" stroke="#b8642a" stroke-width="3"/><circle cx="470" cy="33" r="4"/>
+    <circle cx="390" cy="115" r="4"/><line x1="394" y1="115" x2="460" y2="93" stroke="#b8642a" stroke-width="3"/><circle cx="470" cy="93" r="4"/>
+    <line x1="427" y1="25" x2="427" y2="125" stroke="#0f766e" stroke-dasharray="4 4"/>
+    <circle cx="580" cy="55" r="4"/><line x1="584" y1="55" x2="650" y2="33" stroke="#b8642a" stroke-width="3"/><circle cx="660" cy="33" r="4"/><circle cx="660" cy="70" r="4"/>
+    <circle cx="580" cy="115" r="4"/><line x1="584" y1="115" x2="650" y2="93" stroke="#b8642a" stroke-width="3"/><circle cx="660" cy="93" r="4"/><circle cx="660" cy="130" r="4"/>
+    <line x1="617" y1="25" x2="617" y2="125" stroke="#0f766e" stroke-dasharray="4 4"/>
+   </g>
+   <g font-size="15" font-weight="700" fill="#1f2328"><text x="40" y="140">SPST</text><text x="220" y="140">SPDT</text><text x="400" y="145">DPST</text><text x="690" y="85">DPDT</text></g>
+  </svg>
+  <p class="note">依 S5-F3、S1-F1 重新繪製；綠色虛線表示兩組接點同時動作。</p>
+  <table style="margin-top:10px">
+   <tr><th>代號</th><th>意思</th><th>生活用途<span class="src">S5</span></th></tr>
+   <tr><td>SPST 單刀單擲</td><td>一個電路、一個出口，像普通開關</td><td>檯燈、風扇、電熱器</td></tr>
+   <tr><td>SPDT 單刀雙擲</td><td>一個電路在兩個出口間切換</td><td>自動切換備用電源</td></tr>
+   <tr><td>DPST 雙刀單擲</td><td>一次同時開關兩個電路</td><td>同時切斷火線與中性線</td></tr>
+   <tr><td>DPDT 雙刀雙擲</td><td>兩組 SPDT 由同一線圈控制</td><td>馬達正反轉</td></tr>
+  </table>
+  <p class="note">另一種寫法：Form A＝SPST-NO、Form B＝SPST-NC、Form C＝SPDT；「2 Form A」＝兩組常開接點。<span class="src">S1</span></p>
+ </div>
+</section>
+
+<!-- 10 SSR -->
+<section class="slide" data-wiki="05-固態繼電器SSR" data-src="S1 S4 S5">
+ <div class="inner">
+  <div class="mainq"><small>問題 4／6</small>有哪些種類？</div>
+  <h2 class="subq">固態繼電器（SSR）是什麼？</h2>
+  <p class="answer">用半導體切換、沒有會動零件的繼電器。<span class="src">S1 S4 S5</span></p>
+  <svg class="diagram" viewBox="0 0 760 170" role="img" aria-label="固態繼電器內部方塊圖">
+   <g font-size="14" text-anchor="middle" fill="#1f2328">
+    <rect x="10" y="50" width="130" height="70" rx="10" fill="#dcf1ee" stroke="#0f766e"/><text x="75" y="80">輸入</text><text x="75" y="102" font-size="12" fill="#5f6670">例：3–32 V DC</text>
+    <rect x="170" y="50" width="150" height="70" rx="10" fill="#fff" stroke="#1f2328"/><text x="245" y="80">光耦合器</text><text x="245" y="102" font-size="12" fill="#5f6670">LED → 感光元件</text>
+    <rect x="350" y="50" width="160" height="70" rx="10" fill="#fff" stroke="#1f2328"/><text x="430" y="80">零交越偵測</text><text x="430" y="102" font-size="12" fill="#5f6670">電壓過零才觸發</text>
+    <rect x="540" y="30" width="210" height="110" rx="10" fill="#f6e6d8" stroke="#b8642a"/><text x="645" y="70">TRIAC 輸出</text><text x="645" y="92" font-size="12" fill="#5f6670">＋內建 RC 緩衝電路</text><text x="645" y="114" font-size="12" fill="#5f6670">例：48–480 V AC</text>
+   </g>
+   <g stroke="#5f6670" stroke-width="2"><line x1="140" y1="85" x2="168" y2="85"/><line x1="320" y1="85" x2="348" y2="85"/><line x1="510" y1="85" x2="538" y2="85"/></g>
+   <text x="245" y="150" font-size="12" text-anchor="middle" fill="#0f766e">用「光」隔離輸入和輸出</text>
+  </svg>
+  <p class="note">依 S1-F6 重新繪製並簡化。</p>
+  <div class="grid3" style="margin-top:10px">
+   <div class="card teal"><h3>優點</h3><ul><li>切換快、壽命長<span class="src">S1 S4 S5</span></li><li>沒有電弧、靜音<span class="src">S1 S4</span></li><li>可由 IC、微控制器直接驅動<span class="src">S1</span></li></ul></div>
+   <div class="card red"><h3>缺點</h3><ul><li>導通有 1–2 V 壓降 → <b>會發熱，要裝散熱片</b><span class="src">S1 S4</span></li><li>關閉時仍有微小漏電流<span class="src">S1</span></li><li>比較貴<span class="src">S1 S4</span></li></ul></div>
+   <figure><img src="img/s5-p3-ssr.jpg" alt="單相固態繼電器實物" style="height:170px;object-fit:contain;padding:8px">
+    <figcaption>單相 SSR：輸入 3–32 VDC、輸出 24–380 VAC；底部金屬面用來貼散熱片。<br>圖片取自：ariat-tech.tw <a href="https://www.ariat-tech.tw/blog/relay-function,characteristics,classification.html" target="_blank" rel="noopener">連結</a></figcaption></figure>
+  </div>
+ </div>
+</section>
+
+<!-- 11 EMR vs SSR -->
+<section class="slide" data-wiki="06-EMR與SSR比較 / 13-應用" data-src="S1 S2 S4 S5">
+ <div class="inner">
+  <div class="mainq"><small>問題 4／6</small>有哪些種類？</div>
+  <h2 class="subq">EMR 和 SSR 差在哪裡？</h2>
+  <p class="note" style="margin:0 0 8px">先從生活中的例子感受一下：</p>
+  <div class="grid2">
+   <div class="card copper"><h3>EMR 的生活例子</h3><p>Arduino 專題用繼電器開關馬達或電器，一動作就聽到「喀」一聲──那是接點真的在動。<span class="src">S2</span></p><p class="note">適合：切換不頻繁、價格要便宜的場合<span class="src">S4 S5</span></p></div>
+   <div class="card teal"><h3>SSR 的生活例子</h3><p>舞台燈光調光、加熱系統，需要快速、頻繁地開關，而且要安靜。<span class="src">S1 S5</span></p><p class="note">適合：高速、頻繁切換的場合<span class="src">S4 S5</span></p></div>
+  </div>
+  <p class="answer" style="margin-top:18px">為什麼會這樣？差在「用什麼切換」：EMR 靠實體接點，SSR 靠半導體。<span class="src">S5</span></p>
+  <p class="note">下面所有差異，都是從這一點延伸出來的。</p>
+  <table>
+   <tr><th>比較</th><th>電磁繼電器 EMR</th><th>固態繼電器 SSR</th></tr>
+   <tr><td>速度</td><td>較慢<span class="src">S1 S4</span></td><td>快<span class="src">S1 S4 S5</span></td></tr>
+   <tr><td>壽命</td><td>接點會磨損<span class="src">S1 S4</span></td><td>長，沒有機械磨損<span class="src">S1 S4 S5</span></td></tr>
+   <tr><td>聲音</td><td>「喀」一聲<span class="src">S2 S4</span></td><td>靜音<span class="src">S4 S5</span></td></tr>
+   <tr><td>電弧</td><td>有<span class="src">S1</span></td><td>沒有<span class="src">S1</span></td></tr>
+   <tr><td>維護</td><td>需要<span class="src">S4</span></td><td>少<span class="src">S4</span></td></tr>
+   <tr><td>發熱</td><td>少，導通壓降很小<span class="src">S1 S4</span></td><td>多，要散熱片<span class="src">S1 S4</span></td></tr>
+   <tr><td>關閉時</td><td>完全斷開<span class="src">S1</span></td><td>有微小漏電流<span class="src">S1</span></td></tr>
+   <tr><td>價格</td><td>較便宜<span class="src">S4 S5</span></td><td>較貴<span class="src">S1 S4</span></td></tr>
+  </table>
+ </div>
+</section>
+
+<section class="slide" data-wiki="07-繼電器的分類" data-src="S1 S3 S4 S5 S6">
+ <div class="inner">
+  <div class="mainq"><small>問題 4／6</small>有哪些種類？</div>
+  <h2 class="subq">為什麼繼電器有那麼多種？</h2>
+  <p class="answer">因為可以從「切換方式、用途、接點」三個角度來分類。<span class="src">S4 S5 S6</span></p>
+  <div class="grid3">
+   <div class="card copper"><h3>依切換方式</h3><p><b>EMR</b>（含簧片、栓鎖）<br><b>SSR</b>（含零交越型）</p><p class="note">S1 S4 S5 S6</p></div>
+   <div class="card teal"><h3>依用途</h3><p>控制型、保護型、安全、車用、高頻</p><p class="note">S3 S4 S5 S6</p></div>
+   <div class="card amber"><h3>依接點</h3><p>NO／NC／CO<br>SPST～DPDT<br>Form A／B／C</p><p class="note">S1 S4 S5 S6</p></div>
+  </div>
+  <p class="lead" style="margin-top:20px">所以同一顆繼電器可以同時有好幾個「身分」：例如一顆車用繼電器，通常也是 EMR，接點可能是 SPDT。〔教學推論〕</p>
+   <div class="card amber" style="margin-top:14px"><b>下一頁 →</b> 針對「依用途」裡最常見的兩大類：<b>控制型</b>與<b>保護型</b>，做更深入的說明。</div>
+ </div>
+</section>
+
+<!-- 13 圖鑑 -->
+<section class="slide" data-wiki="08-控制型與保護型繼電器" data-src="S3 S4">
+ <div class="inner">
+  <div class="mainq"><small>問題 4／6</small>有哪些種類？</div>
+  <h2 class="subq">依用途來分，控制型和保護型有什麼不同？</h2>
+  <p class="answer">不是：控制型「聽命令開關」，保護型「自己判斷危險就斷電」。<span class="src">S3 S4</span></p>
+  <div class="grid2">
+   <div class="card copper"><h3>控制型</h3><p>用小訊號切換大電流，做自動控制。<span class="src">S3 S4</span></p><p>例：一般 EMR、控制繼電器、SSR<br>用在：自動化控制面板、工業機械、馬達控制</p></div>
+   <div class="card teal"><h3>保護型</h3><p>偵測電流、電壓，<b>超過門檻就動作</b>，讓斷路器切斷故障區段。<span class="src">S4</span></p>
+    <ul><li><b>熱過載繼電器</b>：電流過大 → 熱量累積 → 切斷馬達電源<span class="src">S3 S4</span></li>
+    <li><b>差動繼電器</b>：比較兩點電流，有差異就斷電，保護變壓器、發電機<span class="src">S3 S4</span></li>
+    <li>過電流／過電壓／欠電壓繼電器<span class="src">S4</span></li></ul></div>
+  </div>
+  <p class="note" style="margin-top:12px">注意：熱過載繼電器靠的是<b>熱</b>，不是電磁力，原理和前面學的電磁繼電器不同。<span class="src">S3 S4</span></p>
+ </div>
+</section>
+
+<!-- 15 接觸器 -->
+<section class="slide" data-wiki="07-繼電器的分類" data-src="S3 S4 S5 S6">
+ <div class="inner">
+  <div class="mainq"><small>問題 4／6</small>有哪些種類？</div>
+  <h2 class="subq">各種繼電器長什麼樣子？</h2>
+  <p class="answer">外型隨用途差很多，但核心都是「小訊號控制大電流」。</p>
+  <div class="grid4 photo-grid">
+   <figure><img src="img/s5-p1-plugin.jpg" alt="插座式通用電磁繼電器"><figcaption><b>通用型 EMR</b>（插座式）：一般 AC／DC 切換<span class="src">S5</span><br>取自 ariat-tech.tw</figcaption></figure>
+   <figure><img src="img/s3-p2-clear.jpg" alt="透明外殼的電磁繼電器"><figcaption><b>透明外殼 EMR</b>：看得到<b>螺旋彈簧</b>和多組接點<br>取自 Schneider Electric</figcaption></figure>
+   <figure><img src="img/s6-p3-reed.jpg" alt="簧片繼電器"><figcaption><b>簧片繼電器</b>：玻璃管內簧片＋惰性氣體；快、小、靈敏，用於警報器<span class="src">S4 S5 S6</span><br>取自 RS 台灣</figcaption></figure>
+   <figure><img src="img/s5-p6-auto.jpg" alt="車用繼電器"><figcaption><b>車用繼電器</b>：耐震、耐熱、耐電壓波動；車燈、起動馬達、燃油泵、門鎖<span class="src">S4 S5 S6</span><br>取自 ariat-tech.tw</figcaption></figure>
+   <figure><img src="img/s5-p5-hf.jpg" alt="高頻繼電器"><figcaption><b>高頻繼電器</b>：切換射頻、微波訊號，損耗低、隔離高；電信、天線、測試設備<span class="src">S5</span><br>取自 ariat-tech.tw</figcaption></figure>
+   <figure><img src="img/s6-p4-pilz.jpg" alt="安全繼電器"><figcaption><b>安全繼電器</b>：<b>兩個輸入都正確</b>才導通，任一異常就斷開<span class="src">S6</span>。面板上的 CH.1、CH.2 就是兩個通道〔圖片觀察〕<br>取自 RS 台灣</figcaption></figure>
+   <figure><img src="img/s5-p4-safety.jpg" alt="另一款安全繼電器"><figcaption><b>安全繼電器</b>（另一款，標示 FAIL SAFE）：監控急停按鈕、防護門、光幕<span class="src">S5 S6</span><br>取自 ariat-tech.tw</figcaption></figure>
+   <figure><img src="img/s5-p3-ssr.jpg" alt="固態繼電器"><figcaption><b>固態繼電器 SSR</b>：半導體切換，沒有會動的零件<span class="src">S1 S4 S5</span><br>取自 ariat-tech.tw</figcaption></figure>
+  </div>
+  <p class="note">還有栓鎖繼電器（斷電後仍維持狀態）、延時繼電器（延遲後才切換）。<span class="src">S4 S5</span></p>
+ </div>
+</section>
+
+<!-- 14 控制型保護型 -->
+<section class="slide" data-wiki="09-接觸器" data-src="S1 S4">
+ <div class="inner">
+  <div class="mainq"><small>問題 4／6</small>有哪些種類？</div>
+  <h2 class="leadin">接觸器和繼電器長得像、原理也一樣，很多人常常分不清楚</h2>
+  <p class="answer plain">其實，接觸器就是專門切換大功率負載的「大型繼電器」。<span class="src">S1 S4</span></p>
+  <div class="grid2">
+   <div class="card"><h3>用途</h3><p>切換三相馬達、照明、電熱等大功率負載。<span class="src">S1 S4</span></p></div>
+   <div class="card"><h3>電流</h3><p>能承受的電流大。<span class="src">S4</span></p></div>
+   <div class="card"><h3>體積</h3><p>較大、結構堅固。<span class="src">S4</span></p></div>
+   <div class="card copper"><h3>滅弧設計：為什麼需要？</h3><p>切斷電路時產生的電弧會燒蝕接點（見問題 5）。<span class="src">S1</span>接觸器內建滅弧設計<span class="src">S1 S4</span>，用來抑制這種損傷、保護接點。〔推論〕</p></div>
+  </div>
+  <p class="big" style="font-size:clamp(1.05rem,2vw,1.3rem);margin-top:18px">相較之下，繼電器多用於小功率控制與小訊號切換，電流約從零點幾安培到 20 多安培，體積也小巧得多。<span class="src">S1 S4</span></p>
+ </div>
+</section>
+
+<section class="slide" data-wiki="10-規格與術語" data-src="S1 S2 S4 S5">
+ <div class="inner">
+  <div class="mainq"><small>問題 5／6</small>怎麼安全使用？</div>
+  <h2 class="leadin">關鍵須知 ①：知道怎麼挑規格</h2>
+  <div class="grid2 rs">
+   <div class="card red"><div class="tag">原因｜為什麼要知道</div><ul><li>規格上的數字是有前提的：接點額定通常以 <b>DC 電阻性負載</b>為準，接馬達這類電感性負載時，能扛的電流會<b>大幅降低</b>。<span class="src">S1</span></li>
+    <li>同一顆繼電器，AC 和 DC 的額定也不一樣。<span class="src">S5</span></li></ul></div>
+   <div class="card teal"><div class="tag">解決方法｜怎麼安全使用</div><ul><li><b>線圈電壓</b>要配合控制電路，例 5／12／24 V；Arduino 常用的 SRD-05VDC-SL-C 線圈就是 5 V。<span class="src">S2 S4</span></li>
+    <li><b>額定電流、切換容量</b>：接點能安全通過、切換的最大電壓與電流。<span class="src">S4</span></li>
+    <li>接電感性負載時，要預留餘裕。<span class="src">S1</span></li></ul></div>
+  </div>
+  <div style="max-width:360px;margin-top:14px"><figure><img src="img/s5-p2-pcb.jpg" alt="外殼印有額定的小型繼電器" style="height:170px;object-fit:contain;padding:8px">
+     <figcaption>外殼標示「3A 120V AC／3A 24V DC」：AC 和 DC 的額定分開標。<span class="src">S5</span><br>圖片取自：ariat-tech.tw</figcaption></figure></div>
+ </div>
+</section>
+
+<section class="slide" data-wiki="11-電弧與保護電路" data-src="S1">
+ <div class="inner">
+  <div class="mainq"><small>問題 5／6</small>怎麼安全使用？</div>
+  <h2 class="leadin">關鍵須知 ②：避免接點壞掉</h2>
+  <div class="grid2 rs">
+   <div class="card red"><div class="tag">原因｜為什麼要知道</div><ul><li>接點分開的瞬間電流還想繼續流，會產生<b>電弧</b>燒蝕接點。<span class="src">S1</span></li>
+    <li>接點電阻因此變大：新品 &lt; 0.2 Ω，燒到 1 Ω 時，10 A 電流就吃掉 10 V，負載可能根本不動。<span class="src">S1</span></li>
+    <li>嚴重時接點<b>熔接</b>，變成關不掉；<b>切 DC 比切 AC 更傷</b>，因為 AC 每半週過零，電弧會自然熄滅。<span class="src">S1</span></li></ul></div>
+   <div class="card teal"><div class="tag">解決方法｜怎麼安全使用</div><ul><li>在接點兩端並聯 <b>RC 緩衝電路</b>，吸收電壓尖峰（下圖）。<span class="src">S1</span></li>
+    <li>選用銀合金接點，延長壽命。<span class="src">S1</span></li>
+    <li><b>不要把接點並聯</b>來加大電流：接點不會同時動作，總有一組瞬間過載而熔接。<span class="src">S1</span></li>
+    <li>同一顆繼電器不要混接高壓 AC 和低壓 DC，要分開用不同繼電器。<span class="src">S1</span></li></ul></div>
+  </div>
+  <div style="max-width:520px;margin-top:14px"><svg class="diagram" viewBox="0 0 380 240" role="img" aria-label="RC 緩衝電路並聯在繼電器接點兩端">
+    <g stroke="#1f2328" stroke-width="2" fill="none">
+     <path d="M40 200 V60 H130"/><path d="M190 60 H320 V110"/><path d="M320 170 V200 H40"/>
+     <line x1="130" y1="60" x2="186" y2="45" stroke="#b8642a" stroke-width="3"/>
+     <circle cx="130" cy="60" r="3" fill="#1f2328"/><circle cx="190" cy="60" r="3" fill="#1f2328"/>
+     <path d="M130 60 V25 H140"/><path d="M140 25 l5 -7 l8 14 l8 -14 l8 14 l5 -7"/><path d="M174 25 H188"/><line x1="188" y1="15" x2="188" y2="35"/><line x1="196" y1="15" x2="196" y2="35"/><path d="M196 25 H210 V60"/>
+     <circle cx="40" cy="130" r="18"/><path d="M30 130 q5 -10 10 0 t10 0"/>
+     <path d="M320 110 c14 0 14 12 0 12 c14 0 14 12 0 12 c14 0 14 12 0 12 c14 0 14 12 0 12 V170"/>
+    </g>
+    <g font-size="12" fill="#1f2328"><text x="120" y="10">RC 緩衝電路</text><text x="135" y="85">繼電器接點</text><text x="2" y="165">電源</text><text x="270" y="190">電感性負載</text></g>
+   </svg><p class="note">示意圖依 S1-F4 重新繪製。</p></div>
+ </div>
+</section>
+
+<section class="slide" data-wiki="11-電弧與保護電路" data-src="S1 S2">
+ <div class="inner">
+  <div class="mainq"><small>問題 5／6</small>怎麼安全使用？</div>
+  <h2 class="leadin">關鍵須知 ③：防範線圈斷電時的反向電壓</h2>
+  <div class="grid2 rs">
+   <div class="card red"><div class="tag">原因｜為什麼要知道</div><ul><li>線圈是「電感」：斷電瞬間磁場崩潰，會產生很高的<b>反向電壓</b>。<span class="src">S1</span></li>
+    <li>這個電壓可能打壞驅動它的<b>電晶體或微控制器</b>（例如 Arduino）。<span class="src">S1</span></li></ul></div>
+   <div class="card teal"><div class="tag">解決方法｜怎麼安全使用</div><ul><li>在線圈兩端<b>反向並聯飛輪二極體</b>，讓這股能量在二極體裡消耗掉（下圖）。<span class="src">S1 S2</span></li>
+    <li>用 Arduino 控制時，透過電晶體驅動線圈，不要讓腳位直接推線圈。<span class="src">S2</span></li>
+    <li>買市售「繼電器模組」，電阻、二極體、電晶體都已內建；買單顆繼電器就要自己接。<span class="src">S2</span></li></ul></div>
+  </div>
+  <div style="max-width:520px;margin-top:14px"><svg class="diagram" viewBox="0 0 380 260" role="img" aria-label="電晶體驅動繼電器線圈並加飛輪二極體">
+    <g stroke="#1f2328" stroke-width="2" fill="none">
+     <path d="M40 25 H340"/><path d="M220 25 V60"/><rect x="195" y="60" width="50" height="50"/><path d="M220 110 V150"/>
+     <path d="M120 25 V60"/><path d="M120 110 V130 H220"/>
+     <polygon points="108,90 132,90 120,70" fill="#dcf1ee"/><line x1="106" y1="68" x2="134" y2="68"/>
+     <path d="M120 90 V110"/><path d="M120 60 V68"/>
+     <circle cx="220" cy="180" r="30"/><path d="M200 165 V195"/><path d="M200 172 L220 150"/><path d="M200 188 L220 210"/><path d="M220 210 V240 H40"/>
+     <path d="M60 180 H90"/><path d="M90 180 l4 -7 l7 14 l7 -14 l7 14 l4 -7 H200"/>
+     <line x1="250" y1="85" x2="300" y2="85" stroke-dasharray="4 4"/><circle cx="290" cy="110" r="3"/><circle cx="335" cy="70" r="3"/><circle cx="335" cy="105" r="3"/><line x1="292" y1="108" x2="332" y2="72" stroke="#b8642a" stroke-width="3"/>
+    </g>
+    <g font-size="12" fill="#1f2328"><text x="300" y="18">+Vcc</text><text x="205" y="90">線圈</text><text x="40" y="70">飛輪</text><text x="40" y="86">二極體</text><text x="255" y="185">電晶體</text><text x="30" y="175">Vin</text><text x="342" y="74">NC</text><text x="342" y="109">NO</text><text x="276" y="128">C</text><text x="300" y="235">0 V</text></g>
+   </svg><p class="note">示意圖依 S1-F5 重新繪製並簡化。</p></div>
+ </div>
+</section>
+
+<section class="slide" data-wiki="12-繼電器測試與故障判斷" data-src="S1 S4 S5 S6">
+ <div class="inner">
+  <div class="mainq"><small>問題 5／6</small>怎麼安全使用？</div>
+  <h2 class="leadin">關鍵須知 ④：用症狀確認繼電器是否損壞</h2>
+  <div class="grid2 rs">
+   <div class="card red"><div class="tag">原因｜為什麼要知道</div><p>接點會燒蝕、甚至熔接，屬於消耗品<span class="src">S1</span>；壞掉時設備會出現這些症狀：</p>
+    <ul><li>馬達不啟動或延遲啟動、燈閃爍、設備時好時壞<span class="src">S5</span></li>
+    <li>繼電器不吸合、不釋放，接點不切換<span class="src">S6</span></li>
+    <li>線圈過熱、有焦味<span class="src">S5 S6</span></li></ul></div>
+   <div class="card teal"><div class="tag">解決方法｜怎麼安全使用</div><ol class="steps" style="margin:0">
+    <li><b>目視</b>：燒焦、熔化、端子鬆脫<span class="src">S4 S5 S6</span></li>
+    <li><b>聽聲音</b>：通電要「喀」一聲；沒聲音→線圈壞或沒供電<span class="src">S5</span></li>
+    <li><b>找腳位</b>：對照規格書找線圈與 COM／NO／NC<span class="src">S4</span></li>
+    <li><b>量線圈電阻</b>：OL＝線圈斷了；過低＝可能短路；正常值依型號而異<span class="src">S4 S5</span></li>
+    <li><b>不通電量接點</b>：COM–NO 不通、COM–NC 通<span class="src">S4</span></li>
+    <li><b>通電再量</b>：接點應乾淨切換，卡住就是壞了<span class="src">S5 S6</span></li></ol></div>
+  </div>
+  <div class="warn" style="margin-top:12px">安全提醒：有資料提到「繞過繼電器後設備正常→繼電器壞了」的判斷法<span class="src">S5</span>，但這等於直接碰負載端電路（可能是 110／220 V），<b>新手請不要自己操作</b>。〔教學提醒〕</div>
+ </div>
+</section>
+
+<section class="slide" data-wiki="13-應用" data-src="S1 S2 S3 S4 S5 S6">
+ <div class="inner">
+  <div class="mainq"><small>問題 6／6</small>用在哪裡？</div>
+  <h2 class="subq">繼電器用在哪些地方？</h2>
+  <p class="answer">從家裡的冰箱、路上的汽車，到工廠和電網都有它。<span class="src">S3 S4 S5 S6</span></p>
+  <div class="grid3">
+   <div class="card"><h3>家電</h3><p>冰箱、冷氣、洗衣機、微波爐：切換壓縮機、加熱元件<span class="src">S3 S4 S5</span></p></div>
+   <div class="card"><h3>汽車</h3><p>頭燈、起動馬達、燃油泵、冷氣、門鎖<span class="src">S4 S5 S6</span></p></div>
+   <div class="card"><h3>工業自動化</h3><p>控制面板、馬達、電磁閥、重型機械<span class="src">S3 S4 S5</span></p></div>
+   <div class="card"><h3>電力系統</h3><p>偵測故障、觸發斷路器，保護變壓器和發電機<span class="src">S3 S4 S5</span></p></div>
+   <div class="card"><h3>安全與警報</h3><p>急停、防護門、光幕；入侵時觸發警報與燈光<span class="src">S5 S6</span></p></div>
+   <div class="card"><h3>照明與創客</h3><p>舞台燈光調光（SSR）<span class="src">S1</span>；Arduino 控制馬達與電器<span class="src">S2</span></p></div>
+  </div>
+ </div>
+</section>
+
+<!-- 21 測驗 -->
+<section class="slide" data-wiki="03 / 06 / 11 / 12" data-src="S1 S4 S5 S6">
+ <div class="inner quiz" id="quiz">
+  <div class="mainq"><small>最後</small>小測驗：你懂了嗎？</div>
+  <div class="q" data-answer="b"><p><b>1.</b> 繼電器線圈「沒通電」時，哪個接點和 COM 導通？</p>
+   <button class="opt" data-k="a">NO 常開</button><button class="opt" data-k="b">NC 常閉</button><button class="opt" data-k="c">兩個都導通</button>
+   <div class="fb" data-right="對！NO、NC 指的都是沒通電時的狀態，平常 COM 接在 NC。（Wiki 03）"></div></div>
+  <div class="q" data-answer="c"><p><b>2.</b> EMR 和 SSR 最核心的差別是什麼？</p>
+   <button class="opt" data-k="a">價格不同</button><button class="opt" data-k="b">體積不同</button><button class="opt" data-k="c">一個靠實體接點、一個靠半導體切換</button>
+   <div class="fb" data-right="對！其他差異（速度、壽命、聲音、發熱）都是從這點延伸的。（Wiki 06）"></div></div>
+  <div class="q" data-answer="a"><p><b>3.</b> 用電晶體驅動繼電器線圈時，為什麼要加飛輪二極體？</p>
+   <button class="opt" data-k="a">吸收線圈斷電時的反向電壓，保護電晶體</button><button class="opt" data-k="b">讓繼電器切換更快</button><button class="opt" data-k="c">讓接點不產生電弧</button>
+   <div class="fb" data-right="對！線圈斷電瞬間會產生反電動勢。接點的電弧則是靠 RC 緩衝電路處理。（Wiki 11）"></div></div>
+  <div class="q" data-answer="b"><p><b>4.</b> 用三用電表量到線圈電阻顯示 OL（開路），代表什麼？</p>
+   <button class="opt" data-k="a">一切正常</button><button class="opt" data-k="b">線圈斷了</button><button class="opt" data-k="c">接點熔接</button>
+   <div class="fb" data-right="對！開路代表線圈燒斷。正常的電阻值要對照該型號的規格書。（Wiki 12）"></div></div>
+ </div>
+</section>
+
+<!-- 22 總結 -->
+<section class="slide" data-wiki="index" data-src="">
+ <div class="inner">
+  <div class="mainq"><small>最後</small>總結：帶走這五句話</div>
+  <ol class="steps">
+   <li class="on">繼電器是<b>用小訊號控制大電流</b>的電控開關，還能做電氣隔離。</li>
+   <li class="on">EMR 的動作：<b>線圈通電 → 吸動銜鐵 → 接點切換 → 斷電彈簧復位</b>。</li>
+   <li class="on">NO／NC 看的是<b>沒通電</b>時的狀態；COM 在兩者之間切換。</li>
+   <li class="on">EMR 靠<b>實體接點</b>，SSR 靠<b>半導體</b>；其他差異都由此而來。</li>
+   <li class="on">安全使用：防<b>電弧</b>（RC 緩衝）、防<b>反電動勢</b>（飛輪二極體）、看<b>規格</b>、定期<b>檢查</b>。</li>
+  </ol>
+  <p class="note">想繼續學：把繼電器接進「感測器 → 控制器 → 繼電器 → 負載」的系統，就是自動控制的起點。</p>
+ </div>
+</section>
+
+<!-- 23 參考資料 -->
+<section class="slide" data-wiki="sources / images" data-src="">
+ <div class="inner">
+  <div class="mainq"><small>最後</small>參考資料與圖片來源</div>
+  <table>
+   <tr><th>編號</th><th>資料</th></tr>
+   <tr><td>S1</td><td>Electronics Tutorials〈Electrical Relay〉<br><a href="https://www.electronics-tutorials.ws/io/io_5.html" target="_blank" rel="noopener">https://www.electronics-tutorials.ws/io/io_5.html</a></td></tr>
+   <tr><td>S2</td><td>OpenHome〈mBlock &amp; Arduino（15）認識電晶體與繼電器〉<br><a href="https://openhome.cc/Gossip/CodeData/mBlockArduino/mBlockArduino15.html" target="_blank" rel="noopener">https://openhome.cc/Gossip/CodeData/mBlockArduino/mBlockArduino15.html</a></td></tr>
+   <tr><td>S3</td><td>Schneider Electric〈What is Relay〉（中文為機器翻譯）<br><a href="https://eshop.se.com/in/blog/post/what-is-relay.html" target="_blank" rel="noopener">https://eshop.se.com/in/blog/post/what-is-relay.html</a></td></tr>
+   <tr><td>S4</td><td>Testbook〈What is Relay〉<br><a href="https://testbook.com/electrical-engineering/what-is-relay" target="_blank" rel="noopener">https://testbook.com/electrical-engineering/what-is-relay</a></td></tr>
+   <tr><td>S5</td><td>ariat-tech.tw〈電路中不同類型的繼電器及其功能〉<br><a href="https://www.ariat-tech.tw/blog/relay-function,characteristics,classification.html" target="_blank" rel="noopener">https://www.ariat-tech.tw/blog/relay-function,characteristics,classification.html</a></td></tr>
+   <tr><td>S6</td><td>RS 台灣〈繼電器：作用和運作原理〉<br><a href="https://twcn.rs-online.com/web/content/discovery/ideas-and-advice/how-do-relays-work" target="_blank" rel="noopener">https://twcn.rs-online.com/web/content/discovery/ideas-and-advice/how-do-relays-work</a></td></tr>
+  </table>
+  <p class="note" style="margin-top:12px"><b>圖片說明</b>：實物照片取自上列網站（標示「取自」，原始拍攝者可能為各製造商），僅供課堂教學使用。示意圖（構造、符號、接點、SSR、RC 緩衝、飛輪二極體）由 AI 參考 S1-F1/F2/F4/F5/F6、S5-F1/F3 重新繪製。圖片編號對照見 Wiki 的 images.md。</p>
+ </div>
+</section>
+
+
+
+</main>
+
+<div class="wikiref"><span id="wikiref"></span></div>
+<nav class="bar">
+ <button id="prev" aria-label="上一頁">‹</button>
+ <span class="count" id="count"></span>
+ <button id="next" aria-label="下一頁">›</button>
+</nav>
+
+<script>
+/* 若已將 Wiki 放上 GitHub，填入 wiki 資料夾網址即可讓頁尾變成連結，例如：
+   const WIKI_BASE = "https://github.com/帳號/relay-wiki/blob/main/wiki/"; */
+const WIKI_BASE = "";
+
+const slides=[...document.querySelectorAll('.slide')];
+let cur=0;
+function show(i){
+  cur=Math.max(0,Math.min(slides.length-1,i));
+  slides.forEach((s,k)=>s.classList.toggle('active',k===cur));
+  document.getElementById('count').textContent=(cur+1)+' / '+slides.length;
+  document.getElementById('progress').style.width=((cur+1)/slides.length*100)+'%';
+  const s=slides[cur], w=s.dataset.wiki, src=s.dataset.src;
+  let txt='對應 Wiki：'+w+(src?'｜來源：'+src:'');
+  const ref=document.getElementById('wikiref');
+  if(WIKI_BASE && /^\d\d-/.test(w)){ref.innerHTML='對應 Wiki：<a href="'+WIKI_BASE+encodeURIComponent(w.split(' / ')[0])+'.md" target="_blank">'+w+'</a>'+(src?'｜來源：'+src:'');}
+  else ref.textContent=txt;
+  if(location.hash!=='#'+(cur+1)) history.replaceState(null,'','#'+(cur+1));
+  s.scrollTop=0;
+}
+document.getElementById('prev').onclick=()=>show(cur-1);
+document.getElementById('next').onclick=()=>show(cur+1);
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' ')show(cur+1);
+  if(e.key==='ArrowLeft'||e.key==='PageUp')show(cur-1);
+});
+let tx=null,ty=null;
+document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY},{passive:true});
+document.addEventListener('touchend',e=>{
+  if(tx===null)return;
+  const dx=e.changedTouches[0].clientX-tx, dy=e.changedTouches[0].clientY-ty;
+  if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5) show(cur+(dx<0?1:-1));
+  tx=null;
+},{passive:true});
+
+/* 繼電器互動：通電／斷電 */
+let on=false;
+function render(){
+  document.getElementById('armature').style.transform=on?'rotate(2.7deg)':'rotate(-6.5deg)';
+  document.getElementById('spring').style.transform=on?'scaleY(1.45)':'scaleY(1)';
+  document.getElementById('field').style.opacity=on?1:0;
+  document.getElementById('lampNC').style.fill=on?'#e5e7eb':'#fde68a';
+  document.getElementById('lampNO').style.fill=on?'#fde68a':'#e5e7eb';
+  document.getElementById('stateTxt').textContent=on?'線圈：通電':'線圈：斷電';
+  document.getElementById('stateSub').textContent=on?'磁力吸下銜鐵 → COM 接 NO':'彈簧把銜鐵拉上 → COM 接 NC';
+  document.getElementById('blade').style.transform=on?'rotate(33deg)':'rotate(0deg)';
+  document.getElementById('symState').textContent=on?'通電：COM–NO 導通':'未通電：COM–NC 導通';
+  document.querySelectorAll('#steps li').forEach(li=>{
+    const k=li.dataset.s; li.classList.toggle('on', on?(k==='1'||k==='2'):k==='3');
+  });
+  document.querySelectorAll('[data-toggle]').forEach(b=>{
+    b.textContent = b.classList.contains('ghost') ? '切換線圈通電／斷電' : (on?'切斷線圈電源':'接通線圈電源');
+  });
+}
+document.querySelectorAll('[data-toggle]').forEach(b=>b.addEventListener('click',()=>{on=!on;render();}));
+render();
+
+/* 小測驗 */
+document.querySelectorAll('.quiz .q').forEach(q=>{
+  const fb=q.querySelector('.fb');
+  q.querySelectorAll('.opt').forEach(b=>b.addEventListener('click',()=>{
+    q.querySelectorAll('.opt').forEach(x=>x.classList.remove('right','wrong'));
+    if(b.dataset.k===q.dataset.answer){b.classList.add('right');fb.textContent=fb.dataset.right;}
+    else{b.classList.add('wrong');fb.textContent='再想想看～';}
+  }));
+});
+
+const h=parseInt(location.hash.slice(1));
+show(isNaN(h)?0:h-1);
+</script>
+</body>
+</html>
